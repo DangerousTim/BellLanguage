@@ -110,6 +110,7 @@ void Token::setThisVal(int data){
 
 void Token::print(){
 	switch(name){
+	case tn_print: cout<<"print"; break;
 	case tn_assign: cout<<'='; break;
 	case tn_minus: cout<<'-'; break;
 	case tn_plus: cout<<'+'; break;
@@ -123,7 +124,7 @@ void Token::print(){
 		cout<<val;
 		break;
 
-	case tn_null: cout<<"Invalid token"; break;
+	case tn_null: break;
 	case tn_error: cout<<"Error"; break;
 	default:
 		cout<<"Fix the compiler m8";

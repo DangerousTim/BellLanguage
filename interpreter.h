@@ -8,6 +8,20 @@
 
 #define TAPE_SIZE 1024
 
+/*syntax analyser*/
+
+tokenName syntax(treeNode*);
+
+tokenName syntaxOutput(treeNode*);
+tokenName syntaxShift(treeNode*);
+tokenName syntaxAssignAndPoint(treeNode*);
+tokenName syntaxBinary(treeNode*);
+tokenName syntaxPlusMinus(treeNode*);
+tokenName syntaxThis(treeNode*);
+tokenName syntaxConst(treeNode*);
+
+/*solver*/
+
 Token solve(treeNode*);	
 
 Token funcAssign(treeNode*);
@@ -35,6 +49,7 @@ class Memory {
 	void movePointer(int steps);
 	int currentIndex();
 	void writeAtLocation(int idx, int data);
+	void printTape(int start, int end);
 };
 
 #endif

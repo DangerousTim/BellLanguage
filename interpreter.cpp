@@ -2,6 +2,131 @@
 
 using std::cout;
 
+/*Syntax analyser*/
+
+tokenName syntax(treeNode *leaf){
+	if (leaf == NULL)
+		return tn_null;
+
+	switch (leaf->token.name){
+	case tn_print:
+		return syntaxOutput(leaf);
+	case tn_assign:
+	case tn_lpoint:
+	case tn_rpoint:
+		return syntaxAssignAndPoint(leaf);
+	case tn_lshift:
+	case tn_rshift:
+		return syntaxShift(leaf);
+	case tn_minus:
+	case tn_plus:
+		return syntaxPlusMinus(leaf);
+	case tn_mult:
+	case tn_div:
+		return syntaxBinary(leaf);
+	case tn_lvalue:
+		return syntaxThis(leaf);
+	case tn_rvalue:
+		return syntaxConst(leaf);
+	case tn_error:
+		return tn_error;
+	}
+}
+
+tokenName syntaxShift(treeNode *leaf){
+	tokenName tlhs = syntax(leaf->left);
+	tokenName trhs = syntax(leaf->right);
+
+	if (tlhs == tn_lvalue && 
+		(trhs == tn_lvalue || trhs == tn_rvalue)){
+		return tn_lvalue;
+	}
+	else {
+		syntaxError("<< and >> require lvalue on lhs");
+		return tn_error;
+	}
+}
+
+tokenName syntaxAssignAndPoint(treeNode *leaf){
+	tokenName tlhs = syntax(leaf->left);
+	tokenName trhs = syntax(leaf->right);
+
+	if (tlhs == tn_lvalue &&
+		(trhs == tn_lvalue || trhs == tn_rvalue)){
+		return tn_rvalue;
+	}
+	else {
+		cout<<"chum"<<tlhs;
+		syntaxError("=, >, and < require lvalue on lhs");
+		return tn_error;
+	}
+}
+
+tokenName syntaxOutput(treeNode *leaf){
+	tokenName trhs = syntax(leaf->right);
+
+	if (leaf->left == NULL && 
+		(trhs==tn_lvalue || trhs==tn_rvalue)){
+		return tn_null;
+	}
+	else {
+		syntaxError("print requires integer on rhs");
+		return tn_error;
+	}
+}
+
+tokenName syntaxBinary(treeNode *leaf){
+	//for *, / , %, and, or
+	tokenName tlhs = syntax(leaf->left);
+	tokenName trhs = syntax(leaf->right);
+
+	if ((tlhs == tn_lvalue || tlhs == tn_rvalue) &&
+		(trhs == tn_lvalue || trhs == tn_rvalue)){
+		return tn_rvalue;
+	}
+	else {
+		syntaxError("check operands");
+		return tn_error;
+	}
+}
+
+tokenName syntaxPlusMinus(treeNode *leaf){
+	tokenName tlhs = syntax(leaf->left);
+	tokenName trhs = syntax(leaf->right);
+
+	if ((tlhs == tn_null 
+		|| tlhs == tn_lvalue
+		|| tlhs == tn_rvalue) &&
+		(trhs == tn_lvalue
+		|| trhs == tn_rvalue)){
+		return tn_rvalue;
+	}
+	else {
+		syntaxError("check operands");
+		return tn_error;
+	}
+}
+
+tokenName syntaxThis(treeNode *leaf){
+	if (leaf->left == NULL && leaf->right == NULL)
+		return tn_lvalue;
+	else {
+		syntaxError("check operands");
+		return tn_error;
+	}
+}
+		
+
+tokenName syntaxConst(treeNode *leaf){
+	if (leaf->left == NULL && leaf->right == NULL)
+		return tn_rvalue;
+	else {
+		syntaxError("check operands");
+		return tn_error;
+	}
+}
+	
+
 /*Virtual memory functions*/
 
 int Memory::readVal(int steps){
@@ -20,6 +145,11 @@ inline int Memory::currentIndex(){
 }
 inline void Memory::writeAtLocation(int idx, int data){
 	tape[idx] = data;
+}
+void Memory::printTape(int start, int end){
+	for (int i = start; i <= end; i++)
+		cout<<tape[i]<<"  ";
+	cout<<'\n';
 }
 
 int Memory::tape[TAPE_SIZE] = {0};

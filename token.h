@@ -13,7 +13,7 @@ enum tokenName {
     tn_null = 0,
 
     tn_print,   //print
-    tn_input,    //input ->touch my ass
+    tn_input,    //input 
     tn_assign,
     tn_and,
     tn_or,
