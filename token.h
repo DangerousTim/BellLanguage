@@ -69,6 +69,7 @@ enum Side {left, right};
 
 Token *createTokenList(Lexeme* lexlist);
 Token convertLexemeToToken(Lexeme);
+void printTokenList(Token*);
 void destroyTokenList(Token*);
 
 #endif

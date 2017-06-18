@@ -7,6 +7,8 @@ using std::cout;
 //Lexeme lexlist[1024]; //After lex_init is called, this array is filled with Lexemes. Parser will use this array.
 char * text;
 
+/*lexeme list related functions*/
+
 Lexeme* createLexemeList(char buffer[]) {
     Lexeme *lexlist = new Lexeme [256];
     text = buffer;
@@ -30,6 +32,28 @@ void printLexemeList(Lexeme* lexlist){
     for (int i = 0; lexlist[i].length != 0; i++)
         cout<<'\''<<lexlist[i].text<<'\''<<'\n';
 }
+
+/*Lexeme class*/
+
+int Lexeme::isValidInt(){
+	//checks if lexeme.text is purely an integer values
+	char *endptr;
+	strtol(text, &endptr, 10);
+
+	//if not entirely a number, endptr will contain a string
+	if (*endptr != '\0')
+		tokenError("Token cannot start with a digit!");
+	//number cannot be bigger than int limit
+	else if (strlen(text) > 5)
+		tokenError("Too large a number!");
+	//if text is purely integer and within limits, return true
+	else
+		return 1;	//is a valid integer
+
+	return 0;	//invalid integer
+}
+
+/*Magic*/
 
 int lex_makelexeme(Lexeme & lex) {
     if (!text) {

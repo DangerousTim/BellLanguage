@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+void tokenError(const char msg[]);
 void syntaxError(const char msg[]);
 void execError(const char msg[]);
 
