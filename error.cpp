@@ -2,6 +2,10 @@
 
 using std::cout;
 
+void tokenError(const char msg[]){
+	cout<<"Token error: "<<msg<<'\n';
+}
+
 void syntaxError(const char msg[]){
 	cout<<"Syntax error: "<<msg<<'\n';
 }
