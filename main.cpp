@@ -33,7 +33,7 @@ int main(void){
 	destroyLexemeList(lexlist);
 	destroyTokenList(toklist);
 
-	if (syntax(root) != -1){
+	if (syntax(root) != tn_error){
 		cout<<"Output: \n";
 		solve(root).print();
 		cout<<"Memory: \n";

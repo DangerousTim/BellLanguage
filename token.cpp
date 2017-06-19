@@ -81,6 +81,11 @@ Token convertLexemeToToken(Lexeme lexeme){
 		int val = atoi(lexeme.text);
 		result.setConstVal(val);
 	}
+	else {
+		tokenError("unrecognized token");
+		return tokErr;
+	}
+	
 	
 	return result;
 }

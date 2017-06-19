@@ -1,6 +1,7 @@
 #include "interpreter.h"
 
 using std::cout;
+using std::cin;
 
 /*Syntax analyser*/
 
@@ -11,6 +12,8 @@ tokenName syntax(treeNode *leaf){
 	switch (leaf->token.name){
 	case tn_print:
 		return syntaxOutput(leaf);
+	case tn_input:
+		return syntaxInput(leaf);
 	case tn_assign:
 	case tn_lpoint:
 	case tn_rpoint:
@@ -21,6 +24,7 @@ tokenName syntax(treeNode *leaf){
 	case tn_minus:
 	case tn_plus:
 		return syntaxPlusMinus(leaf);
+	case tn_mod:
 	case tn_mult:
 	case tn_div:
 		return syntaxBinary(leaf);
@@ -56,8 +60,20 @@ tokenName syntaxAssignAndPoint(treeNode *leaf){
 		return tn_rvalue;
 	}
 	else {
-		cout<<"chum"<<tlhs;
 		syntaxError("=, >, and < require lvalue on lhs");
+		return tn_error;
+	}
+}
+
+tokenName syntaxInput(treeNode *leaf){
+	tokenName trhs = syntax(leaf->right);
+
+	if (leaf->left == NULL && 
+		(leaf->right == NULL || trhs == tn_lvalue)){
+		return tn_null;
+	}
+	else {
+		syntaxError("input requires lvalue on rhs");
 		return tn_error;
 	}
 }
@@ -171,12 +187,20 @@ Token solve(treeNode *leaf){
 	
 	case tn_print:
 		return funcPrint(leaf);
+	case tn_input:
+		return funcInput(leaf);
 	case tn_assign:
 		return funcAssign(leaf);
+	case tn_and:
+		return funcAnd(leaf);
+	case tn_or:
+		return funcOr(leaf);
 	case tn_minus:
 		return funcSub(leaf);
 	case tn_plus:
 		return funcAdd(leaf);
+	case tn_mod:
+		return funcMod(leaf);
 	case tn_mult:
 		return funcMult(leaf);
 	case tn_div:
@@ -201,6 +225,16 @@ Token solve(treeNode *leaf){
 	}
 }
 /* Input output*/
+Token funcInput(treeNode *leaf){
+	Token trhs = solve(leaf->right);
+	int n;
+	cin>>n;
+	memory.writeVal(n);
+	Token result;
+	result.setConstVal(n);
+	return result;
+}
+
 Token funcPrint(treeNode *leaf){
 	Token trhs = solve(leaf->right);
 	cout<<(char)trhs.val;
@@ -254,6 +288,24 @@ Token funcPoint(treeNode *leaf, Side side){
 
 /*Arithmetic operations*/	
 
+Token funcAnd(treeNode *leaf){
+	Token tlhs = solve(leaf->left);
+	Token trhs = solve(leaf->right);
+
+	Token result;
+	result.setConstVal(tlhs.val & trhs.val);
+	return result;
+}
+
+Token funcOr(treeNode *leaf){
+	Token tlhs = solve(leaf->left);
+	Token trhs = solve(leaf->right);
+
+	Token result;
+	result.setConstVal(tlhs.val | trhs.val);
+	return result;
+}
+
 Token funcDiv(treeNode *leaf){
 	Token tlhs = solve(leaf->left);
 	Token trhs = solve(leaf->right);
@@ -274,6 +326,19 @@ Token funcMult(treeNode *leaf){
 
 	Token result;
 	result.setConstVal(tlhs.val * trhs.val);
+	return result;
+}
+
+Token funcMod(treeNode *leaf){
+	Token tlhs = solve(leaf->left);
+	Token trhs = solve(leaf->right);
+
+	if (trhs.val == 0){
+		execError("Modulo by 0");
+		return tokErr;
+	}
+	Token result;
+	result.setConstVal(tlhs.val % trhs.val);
 	return result;
 }
 
