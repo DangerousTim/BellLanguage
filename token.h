@@ -13,10 +13,14 @@ enum tokenName {
     tn_null = 0,
 
     tn_print,   //print
-    tn_input,    //input ->touch my ass
     tn_assign,
+    tn_input,
+
     tn_and,
     tn_or,
+    tn_eq,
+    tn_lt,
+    tn_gt,
     
     tn_minus, 
     tn_plus,
@@ -36,16 +40,20 @@ enum tokenPriority {
     tp_null,
 
     tp_print,
-    tp_input,
     tp_assign,
+    tp_input,
+
     tp_or,
     tp_and,
+    tp_eq,
+    tp_lt,
+    tp_gt = tp_lt,
     
     tp_minus, 
     tp_plus = tp_minus,
     tp_mod,
-    tp_mult,
-    tp_div,
+    tp_mult = tp_mod,
+    tp_div = tp_mult,
     tp_lpoint,
     tp_rpoint = tp_lpoint,
     tp_lshift,

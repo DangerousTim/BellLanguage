@@ -17,12 +17,6 @@ void postOrder(treeNode *leaf){
 
 extern Memory memory;
 
-/*
->, < only returns rvalue
->>, << returns current val, in lvalue format
-= does solve lhs, store mem index, solve rhs, input at stored mem index
-this>>3>>3 should work but not this>3>>4 but yes this>>3>4
-*/
 int main(void){	
 	char s[100];
 	cin.getline(s, 100);
@@ -35,14 +29,17 @@ int main(void){
 	for (int i = 0; toklist[i].name != tn_null; i++)
 		root = insertToken(root, toklist[i]);
 
-	cout<<"PostOrder: \n";	
-	postOrder(root);
 	
 	destroyLexemeList(lexlist);
 	destroyTokenList(toklist);
-	
-	cout<<"Answer: \n";
-	solve(root).print();
+
+	if (syntax(root) != tn_error){
+		cout<<"Output: \n";
+		solve(root).print();
+		cout<<"Memory: \n";
+		memory.printTape(0, 10);
+	}
+	else cout<<"Error\n";
 
 	deleteTree(root);
 }

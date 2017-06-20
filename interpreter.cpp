@@ -1,6 +1,152 @@
 #include "interpreter.h"
 
 using std::cout;
+using std::cin;
+
+/*Syntax analyser*/
+
+tokenName syntax(treeNode *leaf){
+	if (leaf == NULL)
+		return tn_null;
+
+	switch (leaf->token.name){
+	case tn_print:
+		return syntaxOutput(leaf);
+	case tn_input:
+		return syntaxInput(leaf);
+	case tn_assign:
+	case tn_lpoint:
+	case tn_rpoint:
+		return syntaxAssignAndPoint(leaf);
+	case tn_lshift:
+	case tn_rshift:
+		return syntaxShift(leaf);
+	case tn_minus:
+	case tn_plus:
+		return syntaxPlusMinus(leaf);
+	case tn_and:
+	case tn_or:
+	case tn_eq:
+	case tn_lt:
+	case tn_gt:
+	case tn_mod:
+	case tn_mult:
+	case tn_div:
+		return syntaxBinary(leaf);
+	case tn_lvalue:
+		return syntaxThis(leaf);
+	case tn_rvalue:
+		return syntaxConst(leaf);
+	case tn_error:
+		return tn_error;
+	}
+}
+
+tokenName syntaxShift(treeNode *leaf){
+	tokenName tlhs = syntax(leaf->left);
+	tokenName trhs = syntax(leaf->right);
+
+	if (tlhs == tn_lvalue && 
+		(trhs == tn_lvalue || trhs == tn_rvalue)){
+		return tn_lvalue;
+	}
+	else {
+		syntaxError("<< and >> require lvalue on lhs");
+		return tn_error;
+	}
+}
+
+tokenName syntaxAssignAndPoint(treeNode *leaf){
+	tokenName tlhs = syntax(leaf->left);
+	tokenName trhs = syntax(leaf->right);
+
+	if (tlhs == tn_lvalue &&
+		(trhs == tn_lvalue || trhs == tn_rvalue)){
+		return tn_rvalue;
+	}
+	else {
+		syntaxError("=, >, and < require lvalue on lhs");
+		return tn_error;
+	}
+}
+
+tokenName syntaxInput(treeNode *leaf){
+	tokenName trhs = syntax(leaf->right);
+
+	if (leaf->left == NULL && 
+		(leaf->right == NULL || trhs == tn_lvalue)){
+		return tn_null;
+	}
+	else {
+		syntaxError("input requires lvalue on rhs");
+		return tn_error;
+	}
+}
+
+tokenName syntaxOutput(treeNode *leaf){
+	tokenName trhs = syntax(leaf->right);
+
+	if (leaf->left == NULL && 
+		(trhs==tn_lvalue || trhs==tn_rvalue)){
+		return tn_null;
+	}
+	else {
+		syntaxError("print requires integer on rhs");
+		return tn_error;
+	}
+}
+
+tokenName syntaxBinary(treeNode *leaf){
+	//for *, / , %, and, or, lt, gt, eq
+	tokenName tlhs = syntax(leaf->left);
+	tokenName trhs = syntax(leaf->right);
+
+	if ((tlhs == tn_lvalue || tlhs == tn_rvalue) &&
+		(trhs == tn_lvalue || trhs == tn_rvalue)){
+		return tn_rvalue;
+	}
+	else {
+		syntaxError("check operands");
+		return tn_error;
+	}
+}
+
+tokenName syntaxPlusMinus(treeNode *leaf){
+	tokenName tlhs = syntax(leaf->left);
+	tokenName trhs = syntax(leaf->right);
+
+	if ((tlhs == tn_null 
+		|| tlhs == tn_lvalue
+		|| tlhs == tn_rvalue) &&
+		(trhs == tn_lvalue
+		|| trhs == tn_rvalue)){
+		return tn_rvalue;
+	}
+	else {
+		syntaxError("check operands");
+		return tn_error;
+	}
+}
+
+tokenName syntaxThis(treeNode *leaf){
+	if (leaf->left == NULL && leaf->right == NULL)
+		return tn_lvalue;
+	else {
+		syntaxError("check operands");
+		return tn_error;
+	}
+}
+		
+
+tokenName syntaxConst(treeNode *leaf){
+	if (leaf->left == NULL && leaf->right == NULL)
+		return tn_rvalue;
+	else {
+		syntaxError("check operands");
+		return tn_error;
+	}
+}
+	
 
 /*Virtual memory functions*/
 
@@ -20,6 +166,11 @@ inline int Memory::currentIndex(){
 }
 inline void Memory::writeAtLocation(int idx, int data){
 	tape[idx] = data;
+}
+void Memory::printTape(int start, int end){
+	for (int i = start; i <= end; i++)
+		cout<<tape[i]<<"  ";
+	cout<<'\n';
 }
 
 int Memory::tape[TAPE_SIZE] = {0};
@@ -41,12 +192,26 @@ Token solve(treeNode *leaf){
 	
 	case tn_print:
 		return funcPrint(leaf);
+	case tn_input:
+		return funcInput(leaf);
 	case tn_assign:
 		return funcAssign(leaf);
+	case tn_and:
+		return funcAnd(leaf);
+	case tn_or:
+		return funcOr(leaf);
+	case tn_eq:
+		return funcEq(leaf);
+	case tn_lt:
+		return funcLt(leaf);
+	case tn_gt:
+		return funcGt(leaf);
 	case tn_minus:
 		return funcSub(leaf);
 	case tn_plus:
 		return funcAdd(leaf);
+	case tn_mod:
+		return funcMod(leaf);
 	case tn_mult:
 		return funcMult(leaf);
 	case tn_div:
@@ -71,6 +236,16 @@ Token solve(treeNode *leaf){
 	}
 }
 /* Input output*/
+Token funcInput(treeNode *leaf){
+	Token trhs = solve(leaf->right);
+	int n;
+	cin>>n;
+	memory.writeVal(n);
+	Token result;
+	result.setConstVal(n);
+	return result;
+}
+
 Token funcPrint(treeNode *leaf){
 	Token trhs = solve(leaf->right);
 	cout<<(char)trhs.val;
@@ -122,7 +297,51 @@ Token funcPoint(treeNode *leaf, Side side){
 	return result;
 }
 
+/*Comparison operators*/
+
+Token funcEq(treeNode *leaf){
+	Token tlhs = solve(leaf->left);
+	Token trhs = solve(leaf->right);
+	Token result;
+	result.setConstVal(tlhs.val == trhs.val);
+	return result;
+}
+
+Token funcLt(treeNode *leaf){
+	Token tlhs = solve(leaf->left);
+	Token trhs = solve(leaf->right);
+	Token result;
+	result.setConstVal(tlhs.val < trhs.val);
+	return result;
+}
+
+Token funcGt(treeNode *leaf){
+	Token tlhs = solve(leaf->left);
+	Token trhs = solve(leaf->right);
+	Token result;
+	result.setConstVal(tlhs.val > trhs.val);
+	return result;
+}
+
 /*Arithmetic operations*/	
+
+Token funcAnd(treeNode *leaf){
+	Token tlhs = solve(leaf->left);
+	Token trhs = solve(leaf->right);
+
+	Token result;
+	result.setConstVal(tlhs.val & trhs.val);
+	return result;
+}
+
+Token funcOr(treeNode *leaf){
+	Token tlhs = solve(leaf->left);
+	Token trhs = solve(leaf->right);
+
+	Token result;
+	result.setConstVal(tlhs.val | trhs.val);
+	return result;
+}
 
 Token funcDiv(treeNode *leaf){
 	Token tlhs = solve(leaf->left);
@@ -144,6 +363,19 @@ Token funcMult(treeNode *leaf){
 
 	Token result;
 	result.setConstVal(tlhs.val * trhs.val);
+	return result;
+}
+
+Token funcMod(treeNode *leaf){
+	Token tlhs = solve(leaf->left);
+	Token trhs = solve(leaf->right);
+
+	if (trhs.val == 0){
+		execError("Modulo by 0");
+		return tokErr;
+	}
+	Token result;
+	result.setConstVal(tlhs.val % trhs.val);
 	return result;
 }
 

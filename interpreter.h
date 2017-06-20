@@ -8,6 +8,21 @@
 
 #define TAPE_SIZE 1024
 
+/*syntax analyser*/
+
+tokenName syntax(treeNode*);
+
+tokenName syntaxOutput(treeNode*);
+tokenName syntaxInput(treeNode*);
+tokenName syntaxShift(treeNode*);
+tokenName syntaxAssignAndPoint(treeNode*);
+tokenName syntaxBinary(treeNode*);
+tokenName syntaxPlusMinus(treeNode*);
+tokenName syntaxThis(treeNode*);
+tokenName syntaxConst(treeNode*);
+
+/*solver*/
+
 Token solve(treeNode*);	
 
 Token funcAssign(treeNode*);
@@ -15,11 +30,19 @@ Token funcPoint(treeNode*, Side);
 Token funcShift(treeNode*, Side);
 Token funcThis();
 
+Token funcAnd(treeNode*);
+Token funcOr(treeNode*);
+Token funcEq(treeNode*);
+Token funcLt(treeNode*);
+Token funcGt(treeNode*);
+
 Token funcDiv(treeNode*);
 Token funcMult(treeNode*);
+Token funcMod(treeNode*);
 Token funcAdd(treeNode*);
 Token funcSub(treeNode*);
 
+Token funcInput(treeNode*);
 Token funcPrint(treeNode*);
 
 /*Memory class: handles virtual program memory*/
@@ -35,6 +58,7 @@ class Memory {
 	void movePointer(int steps);
 	int currentIndex();
 	void writeAtLocation(int idx, int data);
+	void printTape(int start, int end);
 };
 
 #endif

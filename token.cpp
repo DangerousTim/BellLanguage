@@ -19,6 +19,9 @@ Token tokRPoint = {tn_rpoint, tp_rpoint, 0};	//>
 
 Token tokOr = {tn_or, tp_or, 0};
 Token tokAnd = {tn_and, tp_and, 0};
+Token tokEq = {tn_eq, tp_eq, 0};
+Token tokLt = {tn_lt, tp_lt, 0};
+Token tokGt = {tn_gt, tp_gt, 0};
 
 Token tokMinus = {tn_minus, tp_minus, 0}; 
 Token tokPlus = {tn_plus, tp_plus, 0};
@@ -76,11 +79,22 @@ Token convertLexemeToToken(Lexeme lexeme){
 		result = tokLPoint;
 	else if (strcmp(lexeme.text, ">") == 0)
 		result = tokRPoint;
+	else if (strcmp(lexeme.text, "eq") == 0)
+		result = tokEq;
+	else if (strcmp(lexeme.text, "lt") == 0)
+		result = tokLt;
+	else if (strcmp(lexeme.text, "gt") == 0)
+		result = tokGt;
 
 	else if (lexeme.isValidInt()){
 		int val = atoi(lexeme.text);
 		result.setConstVal(val);
 	}
+	else {
+		tokenError("unrecognized token");
+		return tokErr;
+	}
+	
 	
 	return result;
 }
@@ -110,6 +124,7 @@ void Token::setThisVal(int data){
 
 void Token::print(){
 	switch(name){
+	case tn_print: cout<<"print"; break;
 	case tn_assign: cout<<'='; break;
 	case tn_minus: cout<<'-'; break;
 	case tn_plus: cout<<'+'; break;
@@ -123,7 +138,7 @@ void Token::print(){
 		cout<<val;
 		break;
 
-	case tn_null: cout<<"Invalid token"; break;
+	case tn_null: break;
 	case tn_error: cout<<"Error"; break;
 	default:
 		cout<<"Fix the compiler m8";

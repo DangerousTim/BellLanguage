@@ -36,6 +36,8 @@ void printLexemeList(Lexeme* lexlist){
 /*Lexeme class*/
 
 int Lexeme::isValidInt(){
+	if (!isdigit(text[0]))
+		return 0;
 	//checks if lexeme.text is purely an integer values
 	char *endptr;
 	strtol(text, &endptr, 10);
