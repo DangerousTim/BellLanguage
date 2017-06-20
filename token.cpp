@@ -19,6 +19,9 @@ Token tokRPoint = {tn_rpoint, tp_rpoint, 0};	//>
 
 Token tokOr = {tn_or, tp_or, 0};
 Token tokAnd = {tn_and, tp_and, 0};
+Token tokEq = {tn_eq, tp_eq, 0};
+Token tokLt = {tn_lt, tp_lt, 0};
+Token tokGt = {tn_gt, tp_gt, 0};
 
 Token tokMinus = {tn_minus, tp_minus, 0}; 
 Token tokPlus = {tn_plus, tp_plus, 0};
@@ -76,6 +79,12 @@ Token convertLexemeToToken(Lexeme lexeme){
 		result = tokLPoint;
 	else if (strcmp(lexeme.text, ">") == 0)
 		result = tokRPoint;
+	else if (strcmp(lexeme.text, "eq") == 0)
+		result = tokEq;
+	else if (strcmp(lexeme.text, "lt") == 0)
+		result = tokLt;
+	else if (strcmp(lexeme.text, "gt") == 0)
+		result = tokGt;
 
 	else if (lexeme.isValidInt()){
 		int val = atoi(lexeme.text);

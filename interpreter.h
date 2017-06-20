@@ -13,6 +13,7 @@
 tokenName syntax(treeNode*);
 
 tokenName syntaxOutput(treeNode*);
+tokenName syntaxInput(treeNode*);
 tokenName syntaxShift(treeNode*);
 tokenName syntaxAssignAndPoint(treeNode*);
 tokenName syntaxBinary(treeNode*);
@@ -29,11 +30,19 @@ Token funcPoint(treeNode*, Side);
 Token funcShift(treeNode*, Side);
 Token funcThis();
 
+Token funcAnd(treeNode*);
+Token funcOr(treeNode*);
+Token funcEq(treeNode*);
+Token funcLt(treeNode*);
+Token funcGt(treeNode*);
+
 Token funcDiv(treeNode*);
 Token funcMult(treeNode*);
+Token funcMod(treeNode*);
 Token funcAdd(treeNode*);
 Token funcSub(treeNode*);
 
+Token funcInput(treeNode*);
 Token funcPrint(treeNode*);
 
 /*Memory class: handles virtual program memory*/

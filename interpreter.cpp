@@ -24,6 +24,11 @@ tokenName syntax(treeNode *leaf){
 	case tn_minus:
 	case tn_plus:
 		return syntaxPlusMinus(leaf);
+	case tn_and:
+	case tn_or:
+	case tn_eq:
+	case tn_lt:
+	case tn_gt:
 	case tn_mod:
 	case tn_mult:
 	case tn_div:
@@ -92,7 +97,7 @@ tokenName syntaxOutput(treeNode *leaf){
 }
 
 tokenName syntaxBinary(treeNode *leaf){
-	//for *, / , %, and, or
+	//for *, / , %, and, or, lt, gt, eq
 	tokenName tlhs = syntax(leaf->left);
 	tokenName trhs = syntax(leaf->right);
 
@@ -195,6 +200,12 @@ Token solve(treeNode *leaf){
 		return funcAnd(leaf);
 	case tn_or:
 		return funcOr(leaf);
+	case tn_eq:
+		return funcEq(leaf);
+	case tn_lt:
+		return funcLt(leaf);
+	case tn_gt:
+		return funcGt(leaf);
 	case tn_minus:
 		return funcSub(leaf);
 	case tn_plus:
@@ -283,6 +294,32 @@ Token funcPoint(treeNode *leaf, Side side){
 
 	Token result;
 	result.setConstVal(memory.readVal(trhs.val));
+	return result;
+}
+
+/*Comparison operators*/
+
+Token funcEq(treeNode *leaf){
+	Token tlhs = solve(leaf->left);
+	Token trhs = solve(leaf->right);
+	Token result;
+	result.setConstVal(tlhs.val == trhs.val);
+	return result;
+}
+
+Token funcLt(treeNode *leaf){
+	Token tlhs = solve(leaf->left);
+	Token trhs = solve(leaf->right);
+	Token result;
+	result.setConstVal(tlhs.val < trhs.val);
+	return result;
+}
+
+Token funcGt(treeNode *leaf){
+	Token tlhs = solve(leaf->left);
+	Token trhs = solve(leaf->right);
+	Token result;
+	result.setConstVal(tlhs.val > trhs.val);
 	return result;
 }
 
