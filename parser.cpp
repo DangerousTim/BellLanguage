@@ -28,6 +28,14 @@ treeNode *insertToken(treeNode *leaf, Token newtok){
 	return leaf;
 }
 
+void postOrder(treeNode *leaf){
+	if (leaf != NULL){
+		postOrder(leaf->left);
+		postOrder(leaf->right);
+		leaf->token.print();
+	}
+}
+
 void deleteTree(treeNode *leaf){
 	if (leaf != NULL){
 		deleteTree(leaf->left);

@@ -3,6 +3,8 @@
 using std::cout;
 using std::cin;
 
+short programExit = 0;
+
 /*Syntax analyser*/
 
 tokenName syntax(treeNode *leaf){
@@ -10,6 +12,8 @@ tokenName syntax(treeNode *leaf){
 		return tn_null;
 
 	switch (leaf->token.name){
+	case tn_exit:
+		return syntaxExit(leaf);
 	case tn_print:
 		return syntaxOutput(leaf);
 	case tn_input:
@@ -42,6 +46,14 @@ tokenName syntax(treeNode *leaf){
 	}
 }
 
+tokenName syntaxExit(treeNode *leaf){
+	if (leaf->left == NULL && leaf->right == NULL)
+		return tn_null;
+	else {
+		return tn_error;
+	}
+}
+
 tokenName syntaxShift(treeNode *leaf){
 	tokenName tlhs = syntax(leaf->left);
 	tokenName trhs = syntax(leaf->right);
@@ -51,7 +63,6 @@ tokenName syntaxShift(treeNode *leaf){
 		return tn_lvalue;
 	}
 	else {
-		syntaxError("<< and >> require lvalue on lhs");
 		return tn_error;
 	}
 }
@@ -65,7 +76,6 @@ tokenName syntaxAssignAndPoint(treeNode *leaf){
 		return tn_rvalue;
 	}
 	else {
-		syntaxError("=, >, and < require lvalue on lhs");
 		return tn_error;
 	}
 }
@@ -78,7 +88,6 @@ tokenName syntaxInput(treeNode *leaf){
 		return tn_null;
 	}
 	else {
-		syntaxError("input requires lvalue on rhs");
 		return tn_error;
 	}
 }
@@ -91,7 +100,6 @@ tokenName syntaxOutput(treeNode *leaf){
 		return tn_null;
 	}
 	else {
-		syntaxError("print requires integer on rhs");
 		return tn_error;
 	}
 }
@@ -106,7 +114,6 @@ tokenName syntaxBinary(treeNode *leaf){
 		return tn_rvalue;
 	}
 	else {
-		syntaxError("check operands");
 		return tn_error;
 	}
 }
@@ -123,7 +130,6 @@ tokenName syntaxPlusMinus(treeNode *leaf){
 		return tn_rvalue;
 	}
 	else {
-		syntaxError("check operands");
 		return tn_error;
 	}
 }
@@ -132,7 +138,6 @@ tokenName syntaxThis(treeNode *leaf){
 	if (leaf->left == NULL && leaf->right == NULL)
 		return tn_lvalue;
 	else {
-		syntaxError("check operands");
 		return tn_error;
 	}
 }
@@ -142,7 +147,6 @@ tokenName syntaxConst(treeNode *leaf){
 	if (leaf->left == NULL && leaf->right == NULL)
 		return tn_rvalue;
 	else {
-		syntaxError("check operands");
 		return tn_error;
 	}
 }
@@ -189,7 +193,9 @@ Token solve(treeNode *leaf){
 		return tokNull;
 
 	switch (leaf->token.name) {
-	
+
+	case tn_exit:
+		return funcExit();	
 	case tn_print:
 		return funcPrint(leaf);
 	case tn_input:
@@ -235,6 +241,12 @@ Token solve(treeNode *leaf){
 
 	}
 }
+
+Token funcExit(){
+	programExit = 1;
+	return tokNull;
+}
+
 /* Input output*/
 Token funcInput(treeNode *leaf){
 	Token trhs = solve(leaf->right);
@@ -348,7 +360,7 @@ Token funcDiv(treeNode *leaf){
 	Token trhs = solve(leaf->right);
 
 	if (trhs.val == 0){
-		execError("Division by zero");
+		cout<<"exec error: division by 0\n";
 		return tokErr;
 	}
 
@@ -371,7 +383,7 @@ Token funcMod(treeNode *leaf){
 	Token trhs = solve(leaf->right);
 
 	if (trhs.val == 0){
-		execError("Modulo by 0");
+		cout<<"exec error: modulo by 0\n";
 		return tokErr;
 	}
 	Token result;

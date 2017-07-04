@@ -4,7 +4,6 @@
 #include <iostream>
 #include "token.h"
 #include "parser.h"
-#include "error.h"
 
 #define TAPE_SIZE 1024
 
@@ -12,6 +11,7 @@
 
 tokenName syntax(treeNode*);
 
+tokenName syntaxExit(treeNode*);
 tokenName syntaxOutput(treeNode*);
 tokenName syntaxInput(treeNode*);
 tokenName syntaxShift(treeNode*);
@@ -25,6 +25,7 @@ tokenName syntaxConst(treeNode*);
 
 Token solve(treeNode*);	
 
+Token funcExit();
 Token funcAssign(treeNode*);
 Token funcPoint(treeNode*, Side);
 Token funcShift(treeNode*, Side);

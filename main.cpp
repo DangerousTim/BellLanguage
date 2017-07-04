@@ -7,39 +7,42 @@
 using std::cout;
 using std::cin;
 
-void postOrder(treeNode *leaf){
-	if (leaf != NULL){
-		postOrder(leaf->left);
-		postOrder(leaf->right);
-		leaf->token.print();
-	}
-}
-
 extern Memory memory;
+extern short programExit;
 
-int main(void){	
-	char s[100];
-	cin.getline(s, 100);
+int main(void){
+
+	while (!programExit){	
+		char s[100];
+		cout<<"bell$ ";
+		cin.getline(s, 100);
 	
-	treeNode *root = NULL;
-	Lexeme *lexlist = createLexemeList(s);
+		Lexeme *lexlist = createLexemeList(s);		//make lexeme list
+		Token *toklist = createTokenList(lexlist);	//make token list
+		
+		//unrecognized token present then toklist[0] has tokErr
+		if (toklist[0].name != tn_error){
 
-	Token *toklist = createTokenList(lexlist);
-	
-	for (int i = 0; toklist[i].name != tn_null; i++)
-		root = insertToken(root, toklist[i]);
+			treeNode *root = NULL;
+			//create parse tree
+			for (int i = 0; toklist[i].isValid(); i++)
+				root = insertToken(root, toklist[i]);
+			
+			//check if there's a syntax error
+			//if there is, don't execute
+			if (syntax(root) != tn_error){
+				solve(root).print();	//for debugging purpose
+				cout<<'\n';
+			}
+			else
+				cout<<"syntax error\n";	
 
-	
-	destroyLexemeList(lexlist);
-	destroyTokenList(toklist);
+			deleteTree(root);
+		}
 
-	if (syntax(root) != tn_error){
-		cout<<"Output: \n";
-		solve(root).print();
-		cout<<"Memory: \n";
-		memory.printTape(0, 10);
+		//clean up
+		destroyLexemeList(lexlist);
+		destroyTokenList(toklist);
 	}
-	else cout<<"Error\n";
-
-	deleteTree(root);
+	return 0;
 }

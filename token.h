@@ -11,6 +11,7 @@
 enum tokenName {
     tn_error = -1,
     tn_null = 0,
+    tn_exit,
 
     tn_print,   //print
     tn_assign,
@@ -38,6 +39,7 @@ enum tokenName {
 enum tokenPriority {
     tp_error = -1,
     tp_null,
+    tp_exit,
 
     tp_print,
     tp_assign,

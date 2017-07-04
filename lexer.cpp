@@ -30,7 +30,7 @@ void printLexemeList(Lexeme* lexlist){
 	if (lexlist == NULL) return;
 
     for (int i = 0; lexlist[i].length != 0; i++)
-        cout<<'\''<<lexlist[i].text<<'\''<<'\n';
+        cout<<'\''<<lexlist[i].text<<'\''<<' ';
 }
 
 /*Lexeme class*/
@@ -44,10 +44,10 @@ int Lexeme::isValidInt(){
 
 	//if not entirely a number, endptr will contain a string
 	if (*endptr != '\0')
-		tokenError("Token cannot start with a digit!");
+		cout<<"error: token cannot start with a digit!\n";
 	//number cannot be bigger than int limit
 	else if (strlen(text) > 5)
-		tokenError("Too large a number!");
+		cout<<"error: too large a number!\n";
 	//if text is purely integer and within limits, return true
 	else
 		return 1;	//is a valid integer
@@ -210,10 +210,8 @@ int check(Lexeme & lex) { //checks type of Lexeme
             strncpy(lex.text, text, lex.length);
             lex.text[lex.length] = '\0';
             text += lex.length;
-        } else {
-        char errStr[40];
-        sprintf(errStr, "Invalid token: %s", text);
-        syntaxError(errStr);
+        }
+	else {
             return -1;
         }
     }

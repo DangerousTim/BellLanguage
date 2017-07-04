@@ -16,6 +16,7 @@ struct treeNode {
 treeNode *newTreeNode(Token);
 treeNode *insertToken(treeNode*, Token);
 
+void postOrder(treeNode*);
 void deleteTree(treeNode*);
 
 #endif
