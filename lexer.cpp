@@ -217,4 +217,3 @@ int check(Lexeme & lex) { //checks type of Lexeme
     }
     return 0;
 }
-

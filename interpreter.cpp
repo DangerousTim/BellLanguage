@@ -14,6 +14,8 @@ tokenName syntax(treeNode *leaf){
 	switch (leaf->token.name){
 	case tn_exit:
 		return syntaxExit(leaf);
+	case tn_mem:
+		return syntaxOutput(leaf);
 	case tn_print:
 		return syntaxOutput(leaf);
 	case tn_input:
@@ -31,6 +33,7 @@ tokenName syntax(treeNode *leaf){
 	case tn_and:
 	case tn_or:
 	case tn_eq:
+	case tn_neq:
 	case tn_lt:
 	case tn_gt:
 	case tn_mod:
@@ -135,8 +138,9 @@ tokenName syntaxPlusMinus(treeNode *leaf){
 }
 
 tokenName syntaxThis(treeNode *leaf){
-	if (leaf->left == NULL && leaf->right == NULL)
+	if (leaf->left == NULL && leaf->right == NULL){
 		return tn_lvalue;
+	}
 	else {
 		return tn_error;
 	}
@@ -171,9 +175,11 @@ inline int Memory::currentIndex(){
 inline void Memory::writeAtLocation(int idx, int data){
 	tape[idx] = data;
 }
-void Memory::printTape(int start, int end){
-	for (int i = start; i <= end; i++)
-		cout<<tape[i]<<"  ";
+void Memory::printTape(int numPositions){
+	for (int i = index-numPositions; i < index+numPositions; i++)
+		if (i >= 0 && i < TAPE_SIZE)
+			cout<<tape[i]<<' ';
+
 	cout<<'\n';
 }
 
@@ -196,6 +202,8 @@ Token solve(treeNode *leaf){
 
 	case tn_exit:
 		return funcExit();	
+	case tn_mem:
+		return funcMem(leaf);
 	case tn_print:
 		return funcPrint(leaf);
 	case tn_input:
@@ -208,6 +216,8 @@ Token solve(treeNode *leaf){
 		return funcOr(leaf);
 	case tn_eq:
 		return funcEq(leaf);
+	case tn_neq:
+		return funcNeq(leaf);
 	case tn_lt:
 		return funcLt(leaf);
 	case tn_gt:
@@ -240,6 +250,13 @@ Token solve(treeNode *leaf){
 		return tokErr;
 
 	}
+}
+
+Token funcMem(treeNode *leaf){
+	Token trhs = solve(leaf->right);
+	cout<<"Chicken!\n\n";
+	memory.printTape(trhs.val);
+	return tokNull;
 }
 
 Token funcExit(){
@@ -316,6 +333,12 @@ Token funcEq(treeNode *leaf){
 	Token trhs = solve(leaf->right);
 	Token result;
 	result.setConstVal(tlhs.val == trhs.val);
+	return result;
+}
+
+Token funcNeq(treeNode *leaf){
+	Token result = funcEq(leaf);
+	result.setConstVal(!result.val);
 	return result;
 }
 

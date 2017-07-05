@@ -13,6 +13,7 @@ enum tokenName {
     tn_null = 0,
     tn_exit,
 
+	tn_mem,
     tn_print,   //print
     tn_assign,
     tn_input,
@@ -20,6 +21,7 @@ enum tokenName {
     tn_and,
     tn_or,
     tn_eq,
+    tn_neq,
     tn_lt,
     tn_gt,
     
@@ -41,6 +43,7 @@ enum tokenPriority {
     tp_null,
     tp_exit,
 
+	tp_mem,
     tp_print,
     tp_assign,
     tp_input,
@@ -48,6 +51,7 @@ enum tokenPriority {
     tp_or,
     tp_and,
     tp_eq,
+    tp_neq = tp_eq,
     tp_lt,
     tp_gt = tp_lt,
     

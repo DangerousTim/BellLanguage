@@ -43,4 +43,3 @@ void deleteTree(treeNode *leaf){
 		delete leaf;
 	}
 }
-					

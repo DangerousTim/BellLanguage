@@ -34,6 +34,7 @@ Token funcThis();
 Token funcAnd(treeNode*);
 Token funcOr(treeNode*);
 Token funcEq(treeNode*);
+Token funcNeq(treeNode*);
 Token funcLt(treeNode*);
 Token funcGt(treeNode*);
 
@@ -43,6 +44,7 @@ Token funcMod(treeNode*);
 Token funcAdd(treeNode*);
 Token funcSub(treeNode*);
 
+Token funcMem(treeNode*);
 Token funcInput(treeNode*);
 Token funcPrint(treeNode*);
 
@@ -59,7 +61,7 @@ class Memory {
 	void movePointer(int steps);
 	int currentIndex();
 	void writeAtLocation(int idx, int data);
-	void printTape(int start, int end);
+	void printTape(int numPositions);
 };
 
 #endif

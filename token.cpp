@@ -8,6 +8,7 @@ Token tokNull = {tn_null, tp_null, 0};	  //Null pointer in BPT
 Token tokErr = {tn_error, tp_error, 0};	 // error
 Token tokExit = {tn_exit, tp_error, 0};	  //exit
 
+Token tokMem = {tn_mem, tp_mem, 0};
 Token tokPrint = {tn_print, tp_print, 0};
 Token tokInput = {tn_input, tp_input, 0};	
 
@@ -21,6 +22,7 @@ Token tokRPoint = {tn_rpoint, tp_rpoint, 0};	//>
 Token tokOr = {tn_or, tp_or, 0};
 Token tokAnd = {tn_and, tp_and, 0};
 Token tokEq = {tn_eq, tp_eq, 0};
+Token tokNeq = {tn_neq, tp_neq, 0};
 Token tokLt = {tn_lt, tp_lt, 0};
 Token tokGt = {tn_gt, tp_gt, 0};
 
@@ -73,6 +75,8 @@ Token convertLexemeToToken(Lexeme lexeme){
 		result = tokAssign;
 	else if (strcmp(lexeme.text, "this") == 0)
 		result = tokThis;
+	else if (strcmp(lexeme.text, "mem") == 0)
+		result = tokMem;
 	else if (strcmp(lexeme.text, "print") == 0)
 		result = tokPrint;
 	else if (strcmp(lexeme.text, "input") == 0)
@@ -87,6 +91,8 @@ Token convertLexemeToToken(Lexeme lexeme){
 		result = tokRPoint;
 	else if (strcmp(lexeme.text, "eq") == 0)
 		result = tokEq;
+	else if (strcmp(lexeme.text, "neq") == 0)
+		result = tokNeq;
 	else if (strcmp(lexeme.text, "lt") == 0)
 		result = tokLt;
 	else if (strcmp(lexeme.text, "gt") == 0)
@@ -163,4 +169,4 @@ int Token::isValid(){
 		return 0;   //not valid
 	else
 		return 1;   //valid
-}	 
+}
