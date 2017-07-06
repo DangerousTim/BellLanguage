@@ -27,7 +27,13 @@ int main(void){
 			//create parse tree
 			for (int i = 0; toklist[i].isValid(); i++)
 				root = insertToken(root, toklist[i]);
-			
+/*
+			cout<<"Tok list:\n";
+			printTokenList(toklist);
+			cout<<"Post order:\n";
+			postOrder(root);
+			cout<<'\n';
+*/			
 			//check if there's a syntax error
 			//if there is, don't execute
 			if (syntax(root) != tn_error){

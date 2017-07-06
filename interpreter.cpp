@@ -33,7 +33,6 @@ tokenName syntax(treeNode *leaf){
 	case tn_and:
 	case tn_or:
 	case tn_eq:
-	case tn_neq:
 	case tn_lt:
 	case tn_gt:
 	case tn_mod:
@@ -138,9 +137,8 @@ tokenName syntaxPlusMinus(treeNode *leaf){
 }
 
 tokenName syntaxThis(treeNode *leaf){
-	if (leaf->left == NULL && leaf->right == NULL){
+	if (leaf->left == NULL && leaf->right == NULL)
 		return tn_lvalue;
-	}
 	else {
 		return tn_error;
 	}
@@ -175,16 +173,20 @@ inline int Memory::currentIndex(){
 inline void Memory::writeAtLocation(int idx, int data){
 	tape[idx] = data;
 }
-void Memory::printTape(int numPositions){
-	for (int i = index-numPositions; i < index+numPositions; i++)
-		if (i >= 0 && i < TAPE_SIZE)
-			cout<<tape[i]<<' ';
+void Memory::printTape(int num){
+	int end = index+num;
+	if (end > TAPE_SIZE)
+		end = TAPE_SIZE;
 
+	for (int i = index; i <= end; i++){
+		cout<<i<<':'<<tape[i]<<' ';
+	}
+	cout<<"index: "<<i;
 	cout<<'\n';
 }
 
 int Memory::tape[TAPE_SIZE] = {0};
-Memory memory;	
+Memory memory;		//THE PROGRAM MEMORY
 
 /*Solving parse tree*/
 
@@ -201,7 +203,7 @@ Token solve(treeNode *leaf){
 	switch (leaf->token.name) {
 
 	case tn_exit:
-		return funcExit();	
+		return funcExit();
 	case tn_mem:
 		return funcMem(leaf);
 	case tn_print:
@@ -216,8 +218,6 @@ Token solve(treeNode *leaf){
 		return funcOr(leaf);
 	case tn_eq:
 		return funcEq(leaf);
-	case tn_neq:
-		return funcNeq(leaf);
 	case tn_lt:
 		return funcLt(leaf);
 	case tn_gt:
@@ -245,18 +245,10 @@ Token solve(treeNode *leaf){
 		return funcThis();
 	case tn_rvalue:
 		return leaf->token;
-
 	case tn_error:
 		return tokErr;
 
 	}
-}
-
-Token funcMem(treeNode *leaf){
-	Token trhs = solve(leaf->right);
-	cout<<"Chicken!\n\n";
-	memory.printTape(trhs.val);
-	return tokNull;
 }
 
 Token funcExit(){
@@ -265,6 +257,17 @@ Token funcExit(){
 }
 
 /* Input output*/
+
+//Prints memory tape from current index to current index+trhs.val
+//mem 4 prints index, index+1, index+2...index+4
+Token funcMem(treeNode *leaf){
+	Token trhs = solve(leaf->right);
+	Token tlhs = solve(leaf->left);
+
+	memory.printTape(trhs.val);	
+	return tokNull;
+}
+
 Token funcInput(treeNode *leaf){
 	Token trhs = solve(leaf->right);
 	int n;
@@ -333,12 +336,6 @@ Token funcEq(treeNode *leaf){
 	Token trhs = solve(leaf->right);
 	Token result;
 	result.setConstVal(tlhs.val == trhs.val);
-	return result;
-}
-
-Token funcNeq(treeNode *leaf){
-	Token result = funcEq(leaf);
-	result.setConstVal(!result.val);
 	return result;
 }
 

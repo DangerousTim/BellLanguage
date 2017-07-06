@@ -22,7 +22,6 @@ Token tokRPoint = {tn_rpoint, tp_rpoint, 0};	//>
 Token tokOr = {tn_or, tp_or, 0};
 Token tokAnd = {tn_and, tp_and, 0};
 Token tokEq = {tn_eq, tp_eq, 0};
-Token tokNeq = {tn_neq, tp_neq, 0};
 Token tokLt = {tn_lt, tp_lt, 0};
 Token tokGt = {tn_gt, tp_gt, 0};
 
@@ -91,8 +90,6 @@ Token convertLexemeToToken(Lexeme lexeme){
 		result = tokRPoint;
 	else if (strcmp(lexeme.text, "eq") == 0)
 		result = tokEq;
-	else if (strcmp(lexeme.text, "neq") == 0)
-		result = tokNeq;
 	else if (strcmp(lexeme.text, "lt") == 0)
 		result = tokLt;
 	else if (strcmp(lexeme.text, "gt") == 0)
@@ -169,4 +166,4 @@ int Token::isValid(){
 		return 0;   //not valid
 	else
 		return 1;   //valid
-}
+}	 
