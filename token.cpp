@@ -5,8 +5,10 @@ using std::cout;
 //supported tokens...
 
 Token tokNull = {tn_null, tp_null, 0};	  //Null pointer in BPT
-Token tokErr = {tn_error, tp_error, 0};	 //ohfuk error
+Token tokErr = {tn_error, tp_error, 0};	 // error
+Token tokExit = {tn_exit, tp_error, 0};	  //exit
 
+Token tokMem = {tn_mem, tp_mem, 0};
 Token tokPrint = {tn_print, tp_print, 0};
 Token tokInput = {tn_input, tp_input, 0};	
 
@@ -31,13 +33,18 @@ Token tokDiv = {tn_div, tp_div, 0};
 
 /*Token list functions*/
 
+//converts lexeme list into token list, which is delimited by tokNull
+//returns toklist[0] having tokErr if token not recognized
 Token *createTokenList(Lexeme *lexlist){
 	if (lexlist == NULL) return NULL;
 
 	Token *toklist = new Token [256];
 	int i;
-	for (i = 0; lexlist[i].text[0] != '\0' &&  i < 255; i++){
+	for (i = 0; lexlist[i].length != 0 &&  i < 255; i++){
 		toklist[i] = convertLexemeToToken(lexlist[i]);
+		if (!toklist[i].isValid()){
+			toklist[0] = tokErr;
+		}
 	}
 
 	toklist[i] = tokNull;	//delimiter for list of tokens
@@ -47,7 +54,7 @@ Token *createTokenList(Lexeme *lexlist){
 /*The tokenizer*/
 
 Token convertLexemeToToken(Lexeme lexeme){
-	Token result = tokNull;	//default return is tokNull
+	Token result;
 
 	if (strcmp(lexeme.text, "<<") == 0)
 		result = tokLShift;
@@ -67,6 +74,8 @@ Token convertLexemeToToken(Lexeme lexeme){
 		result = tokAssign;
 	else if (strcmp(lexeme.text, "this") == 0)
 		result = tokThis;
+	else if (strcmp(lexeme.text, "mem") == 0)
+		result = tokMem;
 	else if (strcmp(lexeme.text, "print") == 0)
 		result = tokPrint;
 	else if (strcmp(lexeme.text, "input") == 0)
@@ -85,13 +94,15 @@ Token convertLexemeToToken(Lexeme lexeme){
 		result = tokLt;
 	else if (strcmp(lexeme.text, "gt") == 0)
 		result = tokGt;
+	else if (strcmp(lexeme.text, "exit") == 0)
+		result = tokExit;
 
 	else if (lexeme.isValidInt()){
 		int val = atoi(lexeme.text);
 		result.setConstVal(val);
 	}
 	else {
-		tokenError("unrecognized token");
+		cout<<"unrecognized token: "<<lexeme.text<<'\n';
 		return tokErr;
 	}
 	
@@ -100,8 +111,11 @@ Token convertLexemeToToken(Lexeme lexeme){
 }
 
 void printTokenList(Token *toklist){
-	for (int i = 0; toklist[i].isValid(); i++)
+	for (int i = 0; toklist[i].isValid(); i++){
 		toklist[i].print();
+		cout<<' ';
+	}
+	cout<<'\n';
 }
 
 void destroyTokenList(Token *toklist){
@@ -141,10 +155,10 @@ void Token::print(){
 	case tn_null: break;
 	case tn_error: cout<<"Error"; break;
 	default:
-		cout<<"Fix the compiler m8";
+		cout<<name;
 		break;
 	}
-	cout<<'\n';
+	cout<<' ';
 }
 
 int Token::isValid(){

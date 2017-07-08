@@ -4,7 +4,6 @@
 #include <iostream>
 #include "token.h"
 #include "parser.h"
-#include "error.h"
 
 #define TAPE_SIZE 1024
 
@@ -12,6 +11,7 @@
 
 tokenName syntax(treeNode*);
 
+tokenName syntaxExit(treeNode*);
 tokenName syntaxOutput(treeNode*);
 tokenName syntaxInput(treeNode*);
 tokenName syntaxShift(treeNode*);
@@ -25,6 +25,7 @@ tokenName syntaxConst(treeNode*);
 
 Token solve(treeNode*);	
 
+Token funcExit();
 Token funcAssign(treeNode*);
 Token funcPoint(treeNode*, Side);
 Token funcShift(treeNode*, Side);
@@ -42,6 +43,7 @@ Token funcMod(treeNode*);
 Token funcAdd(treeNode*);
 Token funcSub(treeNode*);
 
+Token funcMem(treeNode*);
 Token funcInput(treeNode*);
 Token funcPrint(treeNode*);
 
@@ -58,7 +60,7 @@ class Memory {
 	void movePointer(int steps);
 	int currentIndex();
 	void writeAtLocation(int idx, int data);
-	void printTape(int start, int end);
+	void printTape(int num);
 };
 
 #endif

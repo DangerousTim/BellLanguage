@@ -3,6 +3,8 @@
 using std::cout;
 using std::cin;
 
+short programExit = 0;
+
 /*Syntax analyser*/
 
 tokenName syntax(treeNode *leaf){
@@ -10,6 +12,10 @@ tokenName syntax(treeNode *leaf){
 		return tn_null;
 
 	switch (leaf->token.name){
+	case tn_exit:
+		return syntaxExit(leaf);
+	case tn_mem:
+		return syntaxOutput(leaf);
 	case tn_print:
 		return syntaxOutput(leaf);
 	case tn_input:
@@ -42,6 +48,14 @@ tokenName syntax(treeNode *leaf){
 	}
 }
 
+tokenName syntaxExit(treeNode *leaf){
+	if (leaf->left == NULL && leaf->right == NULL)
+		return tn_null;
+	else {
+		return tn_error;
+	}
+}
+
 tokenName syntaxShift(treeNode *leaf){
 	tokenName tlhs = syntax(leaf->left);
 	tokenName trhs = syntax(leaf->right);
@@ -51,7 +65,6 @@ tokenName syntaxShift(treeNode *leaf){
 		return tn_lvalue;
 	}
 	else {
-		syntaxError("<< and >> require lvalue on lhs");
 		return tn_error;
 	}
 }
@@ -65,7 +78,6 @@ tokenName syntaxAssignAndPoint(treeNode *leaf){
 		return tn_rvalue;
 	}
 	else {
-		syntaxError("=, >, and < require lvalue on lhs");
 		return tn_error;
 	}
 }
@@ -78,7 +90,6 @@ tokenName syntaxInput(treeNode *leaf){
 		return tn_null;
 	}
 	else {
-		syntaxError("input requires lvalue on rhs");
 		return tn_error;
 	}
 }
@@ -91,7 +102,6 @@ tokenName syntaxOutput(treeNode *leaf){
 		return tn_null;
 	}
 	else {
-		syntaxError("print requires integer on rhs");
 		return tn_error;
 	}
 }
@@ -106,7 +116,6 @@ tokenName syntaxBinary(treeNode *leaf){
 		return tn_rvalue;
 	}
 	else {
-		syntaxError("check operands");
 		return tn_error;
 	}
 }
@@ -123,7 +132,6 @@ tokenName syntaxPlusMinus(treeNode *leaf){
 		return tn_rvalue;
 	}
 	else {
-		syntaxError("check operands");
 		return tn_error;
 	}
 }
@@ -132,7 +140,6 @@ tokenName syntaxThis(treeNode *leaf){
 	if (leaf->left == NULL && leaf->right == NULL)
 		return tn_lvalue;
 	else {
-		syntaxError("check operands");
 		return tn_error;
 	}
 }
@@ -142,7 +149,6 @@ tokenName syntaxConst(treeNode *leaf){
 	if (leaf->left == NULL && leaf->right == NULL)
 		return tn_rvalue;
 	else {
-		syntaxError("check operands");
 		return tn_error;
 	}
 }
@@ -167,14 +173,20 @@ inline int Memory::currentIndex(){
 inline void Memory::writeAtLocation(int idx, int data){
 	tape[idx] = data;
 }
-void Memory::printTape(int start, int end){
-	for (int i = start; i <= end; i++)
-		cout<<tape[i]<<"  ";
+void Memory::printTape(int num){
+	int end = index+num;
+	if (end > TAPE_SIZE)
+		end = TAPE_SIZE;
+
+	for (int i = index; i <= end; i++){
+		cout<<i<<':'<<tape[i]<<' ';
+	}
+	cout<<"index: "<<i;
 	cout<<'\n';
 }
 
 int Memory::tape[TAPE_SIZE] = {0};
-Memory memory;	
+Memory memory;		//THE PROGRAM MEMORY
 
 /*Solving parse tree*/
 
@@ -189,7 +201,11 @@ Token solve(treeNode *leaf){
 		return tokNull;
 
 	switch (leaf->token.name) {
-	
+
+	case tn_exit:
+		return funcExit();
+	case tn_mem:
+		return funcMem(leaf);
 	case tn_print:
 		return funcPrint(leaf);
 	case tn_input:
@@ -229,13 +245,29 @@ Token solve(treeNode *leaf){
 		return funcThis();
 	case tn_rvalue:
 		return leaf->token;
-
 	case tn_error:
 		return tokErr;
 
 	}
 }
+
+Token funcExit(){
+	programExit = 1;
+	return tokNull;
+}
+
 /* Input output*/
+
+//Prints memory tape from current index to current index+trhs.val
+//mem 4 prints index, index+1, index+2...index+4
+Token funcMem(treeNode *leaf){
+	Token trhs = solve(leaf->right);
+	Token tlhs = solve(leaf->left);
+
+	memory.printTape(trhs.val);	
+	return tokNull;
+}
+
 Token funcInput(treeNode *leaf){
 	Token trhs = solve(leaf->right);
 	int n;
@@ -348,7 +380,7 @@ Token funcDiv(treeNode *leaf){
 	Token trhs = solve(leaf->right);
 
 	if (trhs.val == 0){
-		execError("Division by zero");
+		cout<<"exec error: division by 0\n";
 		return tokErr;
 	}
 
@@ -371,7 +403,7 @@ Token funcMod(treeNode *leaf){
 	Token trhs = solve(leaf->right);
 
 	if (trhs.val == 0){
-		execError("Modulo by 0");
+		cout<<"exec error: modulo by 0\n";
 		return tokErr;
 	}
 	Token result;

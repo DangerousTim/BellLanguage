@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <iostream>
 #include <string.h>
-#include "error.h"
 
 struct Lexeme{
 	char text[1024];	//Does it have to be soo big?
