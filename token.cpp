@@ -8,6 +8,8 @@ Token tokNull = {tn_null, tp_null, 0};	  //Null pointer in BPT
 Token tokErr = {tn_error, tp_error, 0};	 // error
 Token tokExit = {tn_exit, tp_error, 0};	  //exit
 
+Token tokIf = {tn_if, tp_if, 0};
+
 Token tokMem = {tn_mem, tp_mem, 0};
 Token tokPrint = {tn_print, tp_print, 0};
 Token tokInput = {tn_input, tp_input, 0};	
@@ -74,6 +76,8 @@ Token convertLexemeToToken(Lexeme lexeme){
 		result = tokAssign;
 	else if (strcmp(lexeme.text, "this") == 0)
 		result = tokThis;
+	else if (strcmp(lexeme.text, "?") == 0)
+		result = tokIf;
 	else if (strcmp(lexeme.text, "mem") == 0)
 		result = tokMem;
 	else if (strcmp(lexeme.text, "print") == 0)
@@ -139,18 +143,30 @@ void Token::setThisVal(int data){
 void Token::print(){
 	switch(name){
 	case tn_print: cout<<"print"; break;
+	case tn_input: cout<<"input"; break;
+
 	case tn_assign: cout<<'='; break;
 	case tn_minus: cout<<'-'; break;
 	case tn_plus: cout<<'+'; break;
 	case tn_mult: cout<<'*'; break;
 	case tn_div: cout<<'/'; break;
+
+	case tn_and: cout<<"and"; break;
+	case tn_or: cout<<"or"; break;
+	case tn_lt: cout<<"lt"; break;
+	case tn_gt: cout<<"gt"; break;
+
 	case tn_lshift: cout<< "<<"; break;
 	case tn_rshift: cout<< ">>"; break;
 	case tn_lvalue:
-		cout<<'l';
+		cout<<'l'<<val;	break;
 	case tn_rvalue:
-		cout<<val;
-		break;
+		cout<<'r'<<val;	break;
+
+	case tn_if:
+		cout<<'?'; break;
+	case tn_exit:
+		cout<<"exit"; break;
 
 	case tn_null: break;
 	case tn_error: cout<<"Error"; break;
