@@ -4,9 +4,9 @@ This is a humble attempt at creating a simple programming language from scratch.
 
 Right now the main objective is to create a language which can:
 
-* Can execute single lines (non-block) of code 
-* Can spot syntax errors
-* Can handle and avoid execution errors
+* Can execute single lines (non-block) of code (done)
+* Can spot syntax errors  (done)
+* Can handle and avoid execution errors (done)
 * Can interpret files
 
 Sometime in the future we might add the capability to handle blocks of code, and consequently be able to implements functions.
@@ -14,6 +14,6 @@ Sometime in the future we might add the capability to handle blocks of code, and
 TODO:
 * Document Code
 * Add inline help
-* Add ? (if) operator
+* Add ? (if) operator **Done**
 * Add loop operator
 * Interpret files
