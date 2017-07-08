@@ -1,8 +1,19 @@
-# BellLanguage
+#BellLanguage
 
-What's working:
+This is a humble attempt at creating a simple programming language from scratch. The goal of this language is to be extremely simple and hence easy to understand (for the compiler at least). The compiler works by converting everything into a binary parse tree; this is the basis for the design and syntax of the language. In fact 'BELL' is a (lousy) acronym for Binary Expression Language, though Brainf@#$ (E)Inspired Language is also appropriate.
 
-Lexer, Tokenizer, Binary Parser, Syntax analyser, Simple Binary Solver
+Right now the main objective is to create a language which can:
 
-What needs to be done:
-blocks of code (for if and loop and functions)
+* Can execute single lines (non-block) of code 
+* Can spot syntax errors
+* Can handle and avoid execution errors
+* Can interpret files
+
+Sometime in the future we might add the capability to handle blocks of code, and consequently be able to implements functions.
+
+TODO:
+* Document Code
+* Add inline help
+* Add ? (if) operator
+* Add loop operator
+* Interpret files
