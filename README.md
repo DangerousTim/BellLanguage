@@ -1,4 +1,4 @@
-#BellLanguage
+# BellLanguage
 
 This is a humble attempt at creating a simple programming language from scratch. The goal of this language is to be extremely simple and hence easy to understand (for the compiler at least). The compiler works by converting everything into a binary parse tree; this is the basis for the design and syntax of the language. In fact 'BELL' is a (lousy) acronym for Binary Expression Language, though Brainf@#$ (E)Inspired Language is also appropriate.
 
