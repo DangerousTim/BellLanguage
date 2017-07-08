@@ -16,6 +16,8 @@ tokenName syntax(treeNode *leaf){
 		return syntaxExit(leaf);
 	case tn_mem:
 		return syntaxMem(leaf);
+	case tn_if:
+		return syntaxIf(leaf);
 	case tn_print:
 		return syntaxOutput(leaf);
 	case tn_input:
@@ -48,9 +50,21 @@ tokenName syntax(treeNode *leaf){
 	}
 }
 
+tokenName syntaxIf(treeNode *leaf){
+	tokenName tlhs = syntax(leaf->left);
+	tokenName trhs = syntax(leaf->right);
+	
+	if ((tlhs == tn_lvalue || tlhs == tn_rvalue)
+		&& trhs != tn_null && trhs != tn_error)
+		return tn_if;	//all ok
+	else
+		return tn_error;
+}
+
+
 tokenName syntaxExit(treeNode *leaf){
 	if (leaf->left == NULL && leaf->right == NULL)
-		return tn_null;
+		return tn_exit;
 	else {
 		return tn_error;
 	}
@@ -86,7 +100,7 @@ tokenName syntaxMem(treeNode *leaf){
 	tokenName trhs = syntax(leaf->right);
 
 	if (trhs == tn_lvalue || trhs == tn_rvalue || trhs == tn_null)
-		return tn_null;		//all ok
+		return tn_mem;		//all ok
 }
 
 tokenName syntaxInput(treeNode *leaf){
@@ -94,7 +108,7 @@ tokenName syntaxInput(treeNode *leaf){
 
 	if (leaf->left == NULL && 
 		(leaf->right == NULL || trhs == tn_lvalue)){
-		return tn_null;
+		return tn_input;
 	}
 	else {
 		return tn_error;
@@ -106,7 +120,7 @@ tokenName syntaxOutput(treeNode *leaf){
 
 	if (leaf->left == NULL && 
 		(trhs==tn_lvalue || trhs==tn_rvalue)){
-		return tn_null;
+		return tn_print;
 	}
 	else {
 		return tn_error;
@@ -210,6 +224,8 @@ Token solve(treeNode *leaf){
 
 	case tn_exit:
 		return funcExit();
+	case tn_if:
+		return funcIf(leaf);
 	case tn_mem:
 		return funcMem(leaf);
 	case tn_print:
@@ -259,6 +275,16 @@ Token solve(treeNode *leaf){
 
 Token funcExit(){
 	programExit = 1;
+	return tokNull;
+}
+
+/*if*/
+Token funcIf(treeNode *leaf){
+	Token tlhs = solve(leaf->left);
+
+	if (tlhs.val){
+		solve(leaf->right);
+	}
 	return tokNull;
 }
 
