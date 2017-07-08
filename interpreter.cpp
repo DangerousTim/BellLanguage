@@ -181,7 +181,6 @@ void Memory::printTape(int num){
 	for (int i = index; i <= end; i++){
 		cout<<i<<':'<<tape[i]<<' ';
 	}
-	cout<<"index: "<<i;
 	cout<<'\n';
 }
 
