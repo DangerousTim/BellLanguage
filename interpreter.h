@@ -12,6 +12,7 @@
 tokenName syntax(treeNode*);
 
 tokenName syntaxExit(treeNode*);
+tokenName syntaxMem(treeNode*);
 tokenName syntaxOutput(treeNode*);
 tokenName syntaxInput(treeNode*);
 tokenName syntaxShift(treeNode*);

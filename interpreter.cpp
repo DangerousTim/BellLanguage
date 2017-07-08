@@ -15,7 +15,7 @@ tokenName syntax(treeNode *leaf){
 	case tn_exit:
 		return syntaxExit(leaf);
 	case tn_mem:
-		return syntaxOutput(leaf);
+		return syntaxMem(leaf);
 	case tn_print:
 		return syntaxOutput(leaf);
 	case tn_input:
@@ -80,6 +80,13 @@ tokenName syntaxAssignAndPoint(treeNode *leaf){
 	else {
 		return tn_error;
 	}
+}
+
+tokenName syntaxMem(treeNode *leaf){
+	tokenName trhs = syntax(leaf->right);
+
+	if (trhs == tn_lvalue || trhs == tn_rvalue || trhs == tn_null)
+		return tn_null;		//all ok
 }
 
 tokenName syntaxInput(treeNode *leaf){
@@ -259,11 +266,16 @@ Token funcExit(){
 
 //Prints memory tape from current index to current index+trhs.val
 //mem 4 prints index, index+1, index+2...index+4
+//only mem will print default number of memory locations
 Token funcMem(treeNode *leaf){
-	Token trhs = solve(leaf->right);
-	Token tlhs = solve(leaf->left);
-
-	memory.printTape(trhs.val);	
+	const int default_rhs = 5;
+	if (leaf->right == NULL){
+		memory.printTape(default_rhs);
+	}
+	else {
+		Token trhs = solve(leaf->right);
+		memory.printTape(trhs.val);	
+	}
 	return tokNull;
 }
 
@@ -309,7 +321,7 @@ Token funcShift(treeNode *leaf, Side side){
 	if (side == right)
 		memory.movePointer(trhs.val);
 	else if (side == left)
-		memory.movePointer(-tlhs.val);
+		memory.movePointer(-trhs.val);
 
 	Token result;
 	result.setThisVal(memory.readVal());
