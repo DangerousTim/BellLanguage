@@ -1,4 +1,4 @@
-lexer.o: lexer.cpp error.cpp
+lexer.o: lexer.cpp
 	g++ -c $^
 
 token.o: token.cpp lexer.cpp
@@ -7,15 +7,12 @@ token.o: token.cpp lexer.cpp
 parser.o: parser.cpp token.cpp
 	g++ -c $^
 
-interpreter.o: interpreter.cpp parser.cpp token.cpp error.cpp
+interpreter.o: interpreter.cpp parser.cpp token.cpp
 	g++ -c $^
 
-error.o: error.cpp
+main.o: main.cpp parser.cpp token.cpp interpreter.cpp
 	g++ -c $^
 
-main.o: main.cpp parser.cpp token.cpp interpreter.cpp error.cpp
-	g++ -c $^
-
-main: main.o parser.o token.o interpreter.o error.o lexer.o
+main: main.o parser.o token.o interpreter.o lexer.o
 	g++ -o main $^
 
