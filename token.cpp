@@ -6,7 +6,7 @@ using std::cout;
 
 Token tokNull = {tn_null, tp_null, 0};	  //Null pointer in BPT
 Token tokErr = {tn_error, tp_error, 0};	 // error
-Token tokExit = {tn_exit, tp_error, 0};	  //exit
+Token tokExit = {tn_exit, tp_exit, 0};	  //exit
 
 Token tokIf = {tn_if, tp_if, 0};
 
