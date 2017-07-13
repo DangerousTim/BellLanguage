@@ -12,7 +12,7 @@
 tokenName syntax(treeNode*);
 
 tokenName syntaxExit(treeNode*);
-tokenName syntaxIf(treeNode*);
+tokenName syntaxCond(treeNode*);
 tokenName syntaxMem(treeNode*);
 tokenName syntaxOutput(treeNode*);
 tokenName syntaxInput(treeNode*);
@@ -33,9 +33,11 @@ Token funcPoint(treeNode*, Side);
 Token funcShift(treeNode*, Side);
 Token funcThis();
 
+Token funcLoop(treeNode*);
 Token funcIf(treeNode*);
 Token funcAnd(treeNode*);
 Token funcOr(treeNode*);
+Token funcNeq(treeNode*);
 Token funcEq(treeNode*);
 Token funcLt(treeNode*);
 Token funcGt(treeNode*);

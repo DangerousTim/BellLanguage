@@ -16,8 +16,9 @@ tokenName syntax(treeNode *leaf){
 		return syntaxExit(leaf);
 	case tn_mem:
 		return syntaxMem(leaf);
+	case tn_loop:
 	case tn_if:
-		return syntaxIf(leaf);
+		return syntaxCond(leaf);
 	case tn_print:
 		return syntaxOutput(leaf);
 	case tn_input:
@@ -35,6 +36,7 @@ tokenName syntax(treeNode *leaf){
 	case tn_and:
 	case tn_or:
 	case tn_eq:
+	case tn_neq:
 	case tn_lt:
 	case tn_gt:
 	case tn_mod:
@@ -50,7 +52,7 @@ tokenName syntax(treeNode *leaf){
 	}
 }
 
-tokenName syntaxIf(treeNode *leaf){
+tokenName syntaxCond(treeNode *leaf){
 	tokenName tlhs = syntax(leaf->left);
 	tokenName trhs = syntax(leaf->right);
 	
@@ -226,6 +228,8 @@ Token solve(treeNode *leaf){
 		return funcExit();
 	case tn_if:
 		return funcIf(leaf);
+	case tn_loop:
+		return funcLoop(leaf);
 	case tn_mem:
 		return funcMem(leaf);
 	case tn_print:
@@ -240,6 +244,8 @@ Token solve(treeNode *leaf){
 		return funcOr(leaf);
 	case tn_eq:
 		return funcEq(leaf);
+	case tn_neq:
+		return funcNeq(leaf);
 	case tn_lt:
 		return funcLt(leaf);
 	case tn_gt:
@@ -284,6 +290,16 @@ Token funcIf(treeNode *leaf){
 
 	if (tlhs.val){
 		solve(leaf->right);
+	}
+	return tokNull;
+}
+
+Token funcLoop(treeNode *leaf){
+	Token tlhs = solve(leaf->left);
+
+	while (tlhs.val != 0){
+		solve(leaf->right);
+		tlhs = solve(leaf->left);
 	}
 	return tokNull;
 }
@@ -373,6 +389,12 @@ Token funcEq(treeNode *leaf){
 	Token trhs = solve(leaf->right);
 	Token result;
 	result.setConstVal(tlhs.val == trhs.val);
+	return result;
+}
+
+Token funcNeq(treeNode *leaf){
+	Token result = funcEq(leaf);
+	result.setConstVal(!result.val);
 	return result;
 }
 

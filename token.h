@@ -12,6 +12,7 @@ enum tokenName {
     tn_error = -1,
     tn_null = 0,
     
+    tn_loop,
     tn_if,
 
     tn_exit,
@@ -23,6 +24,7 @@ enum tokenName {
 
     tn_and,
     tn_or,
+    tn_neq,
     tn_eq,
     tn_lt,
     tn_gt,
@@ -44,6 +46,7 @@ enum tokenPriority {
     tp_error = -1,
     tp_null,
 
+    tp_loop,
     tp_if,
     tp_exit,
 
@@ -55,6 +58,7 @@ enum tokenPriority {
     tp_or,
     tp_and,
     tp_eq,
+    tp_neq = tp_eq,
     tp_lt,
     tp_gt = tp_lt,
     
