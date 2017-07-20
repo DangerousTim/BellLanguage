@@ -8,6 +8,7 @@ Token tokNull = {tn_null, tp_null, 0};	  //Null pointer in BPT
 Token tokErr = {tn_error, tp_error, 0};	 // error
 Token tokExit = {tn_exit, tp_exit, 0};	  //exit
 
+Token tokLoop = {tn_loop, tp_loop, 0};
 Token tokIf = {tn_if, tp_if, 0};
 
 Token tokMem = {tn_mem, tp_mem, 0};
@@ -23,6 +24,7 @@ Token tokRPoint = {tn_rpoint, tp_rpoint, 0};	//>
 
 Token tokOr = {tn_or, tp_or, 0};
 Token tokAnd = {tn_and, tp_and, 0};
+Token tokNeq = {tn_neq, tp_neq, 0};
 Token tokEq = {tn_eq, tp_eq, 0};
 Token tokLt = {tn_lt, tp_lt, 0};
 Token tokGt = {tn_gt, tp_gt, 0};
@@ -78,6 +80,8 @@ Token convertLexemeToToken(Lexeme lexeme){
 		result = tokThis;
 	else if (strcmp(lexeme.text, "?") == 0)
 		result = tokIf;
+	else if (strcmp(lexeme.text, "loop") == 0)
+		result = tokLoop;
 	else if (strcmp(lexeme.text, "mem") == 0)
 		result = tokMem;
 	else if (strcmp(lexeme.text, "print") == 0)
@@ -94,6 +98,8 @@ Token convertLexemeToToken(Lexeme lexeme){
 		result = tokRPoint;
 	else if (strcmp(lexeme.text, "eq") == 0)
 		result = tokEq;
+	else if (strcmp(lexeme.text, "neq") == 0)
+		result = tokNeq;
 	else if (strcmp(lexeme.text, "lt") == 0)
 		result = tokLt;
 	else if (strcmp(lexeme.text, "gt") == 0)
@@ -163,8 +169,8 @@ void Token::print(){
 	case tn_rvalue:
 		cout<<'r'<<val;	break;
 
-	case tn_if:
-		cout<<'?'; break;
+	case tn_if: cout<<'?'; break;
+	case tn_loop: cout<<"loop"; break;
 	case tn_exit:
 		cout<<"exit"; break;
 

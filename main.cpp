@@ -12,7 +12,7 @@ char buffer1[1023];
 extern Memory memory;
 extern short programExit;
 
-void executeLine(char s[]){
+int executeLine(char s[]){	
 
 	Lexeme *lexlist = createLexemeList(s);		//make lexeme list
 	Token *toklist = createTokenList(lexlist);	//make token list
@@ -25,7 +25,7 @@ void executeLine(char s[]){
 		for (int i = 0; toklist[i].isValid(); i++)
 			root = insertToken(root, toklist[i]);
 
-/*			cout<<"Tok list:\n";
+/*		cout<<"Tok list:\n";
 		printTokenList(toklist);
 		cout<<"Post order:\n";
 		postOrder(root);
@@ -37,11 +37,16 @@ void executeLine(char s[]){
 			solve(root).print();	//for debugging purpose
 			cout<<'\n';
 		}
-		else
-			cout<<"syntax error\n";
+
+		else {
+			cout<<"syntax error\n";	
+			return -1;
+		}
 
 		deleteTree(root);
 	}
+	else
+		return -1;
 
 	//clean up
 	destroyLexemeList(lexlist);
