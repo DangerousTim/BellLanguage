@@ -1,6 +1,7 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
+
 /*Token.h: For the person writing the lexer, this file 
 **should remain untouched!
 */
