@@ -333,7 +333,7 @@ Token funcInput(treeNode *leaf){
 
 Token funcPrint(treeNode *leaf){
 	Token trhs = solve(leaf->right);
-	cout<<(char)trhs.val;
+	cout<<trhs.val;
 	return tokNull;		//hmmmmm
 }
 

@@ -1,0 +1,8 @@
+this lt 101 loop print this = this + 1
+
+input
+this>>1 = 2
+this<1 % this neq 0 loop this = this+1
+
+this eq this<1 ? print 1
+this lt this<1 ? print 0

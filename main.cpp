@@ -7,8 +7,6 @@
 
 using namespace std;
 
-char buffer1[1023];
-
 extern Memory memory;
 extern short programExit;
 
@@ -34,7 +32,7 @@ int executeLine(char s[]){
 		//check if there's a syntax error
 		//if there is, don't execute
 		if (syntax(root) != tn_error){
-			solve(root).print();	//for debugging purpose
+			solve(root);	//add .print() for debugging purpose
 			cout<<'\n';
 		}
 
@@ -54,28 +52,33 @@ int executeLine(char s[]){
 }
 
 int readfile(const char *filename){
+	char buffer1[1023];
 	ifstream file;
 	file.open(filename, ios::in);
 
-    if (!file.is_open()) {
-        cout << "File " << filename << " does not exist.\n";
-     	return -1;
-    }
+	if (!file.is_open()) {
+		cout << "File " << filename << " does not exist.\n";
+	 	return -1;
+	}
 
-    while(!file.eof()) {
-        file.getline(buffer1,1023);
-        buffer1[1023]='\0';
-        executeLine(buffer1);
-    }
-    return 0;
+	while(!file.eof()) {
+		file.getline(buffer1, 1023);
+		executeLine(buffer1);
+	}
+	return 0;
 }
 
-int main(void){
-    readfile("test.txt");   /*Only works if test.txt is in same directory as project
-                                Else, address of file has to be written
-                                    eg. C:\\Users\\Desktop\\Ron\\bell-master\\test.txt*/
+int main(){
+	cout<<"Do you want to run "<<filename<<" y/n: ";
+	char c;
+	cin>>c;
+	if (c == 'y'){
+		readfile(filename);  
+		return 0;
+	}
 
-        while (!programExit){
+	cout<<"Running command line interpreter mode...\n\n";
+	while (!programExit){
 		char s[100];
 		cout<<"bell$ ";
 		cin.getline(s, 100);

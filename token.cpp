@@ -106,6 +106,10 @@ Token convertLexemeToToken(Lexeme lexeme){
 		result = tokGt;
 	else if (strcmp(lexeme.text, "exit") == 0)
 		result = tokExit;
+	else if (strcmp(lexeme.text, "lol") == 0){
+		result = tokErr;
+		cout<<"This is no laughing matter...\n";
+	}
 
 	else if (lexeme.isValidInt()){
 		int val = atoi(lexeme.text);
